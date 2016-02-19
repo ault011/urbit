@@ -18,9 +18,10 @@
 ::  See the %github app for example usage.
 ::
 /?  314
+/-  rfc, gmail-label
 /+  http
 ::::
-/=  rfc  /:  /%/rfc  /txt/
+/=  rfctext  /:  /%/rfc  /txt/
 ::
 //  /%/split
 ::/-  gmail
@@ -62,7 +63,10 @@
   ==
 ::
 ++  poke-gmail-req
-  |=  [method=meth endpoint=path quy=quay]::jon=(unit json)]
+  |=  $:  method=meth  endpoint=path  quy=quay
+          ::mes=$?(message:rfc )
+          label-req:gmail-label
+      ==
   ^-  [(list move) _+>.$]
   ?>  ?=(valid-get-endpoint endpoint)
   :_  +>.$  :_  ~
@@ -70,18 +74,14 @@
   :*  ost.hid  %hiss  /poke/[method]  `~  %httr  %hiss
       ^-  purl
       :+  [& ~ [%& /com/googleapis/www]]
-        [~ gmail/v1/users/me/`valid-get-endpoint`endpoint]
+        [~ gmail/v1/users/me/`valid-get-endpoint`endpoint]  ::
       `quay`[[%alt %json] ~] 
   ::
       :+  method  `math`(mo ~[content-type/['application/json']~])
-      =+  json-data=(joba %raw (jape (sifo (role rfc))))
-      ~&  json-data
-      =+  six-four=(tact (pojo json-data))
-      ~&  sixf/six-four
-      (some six-four)
-      ::?~  jon  ~
-      ::~&  (taco (crip (pojo u.jon)))
-      ::(some (taco (crip (pojo u.jon))))                 ::  have to make it a unit again
+      ::=+  hoon-json-object=(joba %raw s/(message-to-rfc822:rfc mes))
+      ::=+  request-body=(tact (pojo hoon-json-object))
+      ::(some request-body)
+      (some (pojo label-req-to-json:gmail-label label-req:gmail-label ~))
   ==
 ::
 ::  HTTP response.  We make sure the response is good, then
@@ -91,7 +91,6 @@
 ++  sigh-httr
   |=  [wir=wire res=httr]
   ^-  [(list move) _+>.$]
-  ~&  rfc/rfc
   ?.  ?=([care @ @ @ *] wir)
   ::  pokes don't return anything
   ~&  poke/res
